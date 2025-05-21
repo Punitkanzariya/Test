@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  body {
+    transition: background-color 0.6s ease;
+  }
+</style>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm p-4">
+        <h3 class="text-center mb-4 text-primary fw-bold">🎨 Color Converter</h3>
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="conversion_type" class="form-label">Conversion Type</label>
+            <select class="form-select" name="conversion_type" required>
+              <option value="" disabled selected>Select Conversion</option>
+              <option value="hex_to_rgb" {% if selected_conversion == 'hex_to_rgb' %}selected{% endif %}>HEX to RGB</option>
+              <option value="rgb_to_hex" {% if selected_conversion == 'rgb_to_hex' %}selected{% endif %}>RGB to HEX</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="value" class="form-label">Input Value</label>
+            <input
+              type="text"
+              class="form-control"
+              name="value"
+              placeholder="e.g. #FF5733 or 255,87,51"
+              value="{{ input_value }}"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Convert</button>
+        </form>
+
+        {% if result %}
+        <div class="alert alert-info mt-4 text-center fw-bold">
+          {{ result }}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // JavaScript to change background color based on result
+  (function() {
+    const resultText = `{{ result|escapejs }}`;
+    let bgColor = null;
+
+    if (resultText) {
+      // HEX format example: "HEX: #FF5733"
+      if (resultText.startsWith("HEX: ")) {
+        bgColor = resultText.replace("HEX: ", "").trim();
+      }
+      // RGB format example: "RGB: (255, 87, 51)"
+      else if (resultText.startsWith("RGB: ")) {
+        const rgbStr = resultText.replace("RGB: ", "").trim();
+        // Remove parentheses and spaces to form rgb(...)
+        const rgbValues = rgbStr.replace(/[()]/g, "");
+        bgColor = `rgb(${rgbValues})`;
+      }
+    }
+
+    if (bgColor) {
+      document.body.style.backgroundColor = bgColor;
+    }
+  })();
+</script>
+{% endblock %}

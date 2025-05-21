@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 d-flex justify-content-center align-items-center">
+  <div class="card shadow-lg p-4 rounded-4 w-100" style="max-width: 400px;">
+    <h2 class="text-center mb-4 text-primary fw-bold">
+      <i class="fas fa-money-bill-wave me-2"></i>Currency Converter
+    </h2>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <select class="form-select" name="from_currency" required>
+          <option value="" disabled selected>Select From Currency</option>
+          {% for code, name in currencies.items %}
+          <option value="{{ code }}" {% if from_currency == code %}selected{% endif %}>
+            {{ code }} - {{ name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <select class="form-select" name="to_currency" required>
+          <option value="" disabled selected>Select To Currency</option>
+          {% for code, name in currencies.items %}
+          <option value="{{ code }}" {% if to_currency == code %}selected{% endif %}>
+            {{ code }} - {{ name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <input type="number" name="amount" step="any" value="{{ amount }}" placeholder="Enter amount"
+          class="form-control" required />
+      </div>
+
+      <button type="submit" class="btn btn-gradient-primary w-100 fw-bold">
+        <i class="fas fa-exchange-alt me-2"></i>Convert
+      </button>
+    </form>
+
+    {% if result %}
+    <div class="result text-center mt-4 fs-5 text-dark">
+      {{ input }} <strong>TO</strong> {{ result }}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .btn-gradient-primary {
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border: none;
+    color: white;
+  }
+
+  .btn-gradient-primary:hover {
+    opacity: 0.9;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(to bottom, #f5f9ff, #d6e0ff);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .converter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 75vh;
+    padding: 20px;
+  }
+
+  .card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    max-width: 550px;
+    width: 100%;
+    text-align: center;
+  }
+
+  select, input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: linear-gradient(to right, #0056b3, #008ecf);
+  }
+
+  .result {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #222;
+  }
+</style>
+
+<div class="converter-container">
+  <div class="card">
+    <h2 class="text-center mb-4 text-primary fw-bold">Health Unit Converter</h2>
+    <form method="post">
+      {% csrf_token %}
+      <select name="conversion" id="conversion" required onchange="toggleFields()">
+        <option value="" disabled {% if not conversion_type %}selected{% endif %}>Select Conversion</option>
+
+        <optgroup label="Weight Conversions">
+          {% for option in weight_conversions %}
+            <option value="{{ option }}" {% if conversion_type == option %}selected{% endif %}>
+              {% if option == 'kg_to_lb' %}Kilograms to Pounds
+              {% elif option == 'lb_to_kg' %}Pounds to Kilograms
+              {% elif option == 'g_to_oz' %}Grams to Ounces
+              {% elif option == 'oz_to_g' %}Ounces to Grams
+              {% endif %}
+            </option>
+          {% endfor %}
+        </optgroup>
+
+        <optgroup label="Height Conversions">
+          {% for option in height_conversions %}
+            <option value="{{ option }}" {% if conversion_type == option %}selected{% endif %}>
+              {% if option == 'cm_to_in' %}Centimeters to Inches
+              {% elif option == 'in_to_cm' %}Inches to Centimeters
+              {% elif option == 'm_to_ft' %}Meters to Feet
+              {% elif option == 'ft_to_m' %}Feet to Meters
+              {% endif %}
+            </option>
+          {% endfor %}
+        </optgroup>
+
+        <optgroup label="Temperature Conversions">
+          {% for option in temperature_conversions %}
+            <option value="{{ option }}" {% if conversion_type == option %}selected{% endif %}>
+              {% if option == 'c_to_f' %}Celsius to Fahrenheit
+              {% elif option == 'f_to_c' %}Fahrenheit to Celsius
+              {% endif %}
+            </option>
+          {% endfor %}
+        </optgroup>
+
+        <optgroup label="Other">
+          {% for option in extra_conversions %}
+            <option value="{{ option }}" {% if conversion_type == option %}selected{% endif %}>
+              {% if option == 'bmi' %}BMI Calculator{% endif %}
+            </option>
+          {% endfor %}
+        </optgroup>
+      </select>
+
+      <div id="single-input">
+        <input type="number" step="any" name="value" placeholder="Enter value" value="{{ input_value }}" {% if conversion_type == 'bmi' %}style="display:none;"{% endif %} />
+      </div>
+
+      <div id="bmi-inputs" style="display:none;">
+        <input type="number" step="any" name="weight" placeholder="Enter weight (kg)" value="{{ weight }}" />
+        <input type="number" step="any" name="height" placeholder="Enter height (cm)" value="{{ height }}" />
+      </div>
+
+      <button type="submit">Convert</button>
+    </form>
+
+    {% if result %}
+      <div class="result">
+        Result: {{ result }}
+      </div>
+    {% endif %}
+
+    {% if bmi_result %}
+      <div class="result">
+        Your BMI is: {{ bmi_result }}
+      </div>
+    {% endif %}
+
+    {% if bmi_error %}
+      <div class="result" style="color: red;">
+        {{ bmi_error }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  function toggleFields() {
+    var conversion = document.getElementById('conversion').value;
+    var singleInput = document.getElementById('single-input');
+    var bmiInputs = document.getElementById('bmi-inputs');
+
+    if(conversion === 'bmi') {
+      singleInput.style.display = 'none';
+      bmiInputs.style.display = 'block';
+    } else {
+      singleInput.style.display = 'block';
+      bmiInputs.style.display = 'none';
+    }
+  }
+
+  window.onload = function() {
+    toggleFields();
+  };
+</script>
+{% endblock %}

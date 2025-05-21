@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(to bottom, #eeeeee, #ffffff);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .converter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 75vh;
+    padding: 20px;
+  }
+
+  .card {
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .card h2 {
+    font-size: 22px;
+    margin-bottom: 25px;
+    color: #333;
+    font-weight: bold;
+  }
+
+  .card h2 i {
+    margin-right: 8px;
+    color: #007bff;
+  }
+
+  select,
+  input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  select:focus,
+  input:focus {
+    border-color: #007bff;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  button:hover {
+    background: linear-gradient(to right, #0069d9, #00a4e0);
+  }
+
+  button i {
+    margin-right: 6px;
+  }
+
+  .result {
+    margin-top: 20px;
+    font-size: 17px;
+    color: #222;
+    word-break: break-word;
+  }
+</style>
+
+<div class="converter-container">
+  <div class="card">
+    <h2 class="text-center mb-4 text-primary fw-bold"><i class="fas fa-ruler-combined"></i>Unit Converter</h2>
+    <form method="post">
+      {% csrf_token %}
+      <select name="conversion" required>
+        <option value="" disabled {% if not selected_conversion %}selected{% endif %}>Select Conversion</option>
+        <option value="km_to_miles" {% if selected_conversion == 'km_to_miles' %}selected{% endif %}>🚗 Kilometers to Miles</option>
+        <option value="miles_to_km" {% if selected_conversion == 'miles_to_km' %}selected{% endif %}>🛣️ Miles to Kilometers</option>
+        <option value="c_to_f" {% if selected_conversion == 'c_to_f' %}selected{% endif %}>🌡️ Celsius to Fahrenheit</option>
+        <option value="f_to_c" {% if selected_conversion == 'f_to_c' %}selected{% endif %}>🔥 Fahrenheit to Celsius</option>
+        <option value="kg_to_lb" {% if selected_conversion == 'kg_to_lb' %}selected{% endif %}>🏋️ Kilograms to Pounds</option>
+        <option value="lb_to_kg" {% if selected_conversion == 'lb_to_kg' %}selected{% endif %}>⚖️ Pounds to Kilograms</option>
+      </select>
+
+      <input
+        type="number"
+        name="value"
+        placeholder="Enter value"
+        step="any"
+        value="{{ input_value }}"
+        required
+      />
+
+      <button type="submit"><i class="fas fa-calculator"></i>Convert</button>
+    </form>
+
+    {% if result %}
+    <div class="result">
+      {{ input_value }} <strong>{{ result }}</strong>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
