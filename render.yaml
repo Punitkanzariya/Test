@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: unit-converter-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn unit_converter_project.wsgi:application
+    autoDeploy: true
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: unit_converter_project.settings
+      - key: SECRET_KEY
+        value: 9c@!z5g)j+07v$!k8hg&3@lw#u0(1*d#_=p@=r0v+b-v$y#=t1
+      - key: DEBUG
+        value: "False"
