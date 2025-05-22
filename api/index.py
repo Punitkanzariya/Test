@@ -1,2 +1,7 @@
 # api/index.py
-from unit_converter_project.asgi import application
+def handler(request):
+    return {
+        "statusCode": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "Hello from Python on Vercel!"
+    }
