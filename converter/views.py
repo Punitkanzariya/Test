@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+from PIL import Image
+import io
 import requests
 
 def home(request):
@@ -404,3 +407,28 @@ def health_converter(request):
         'bmi_error': bmi_error,
     }
     return render(request, 'health_converter.html', context)
+
+
+
+def image_to_pdf_view(request):
+    if request.method == 'POST' and request.FILES.get('image'):
+        img_file = request.FILES['image']
+        image = Image.open(img_file)
+
+        # Handle transparency if present
+        if image.mode in ("RGBA", "LA"):
+            background = Image.new("RGB", image.size, (255, 255, 255))
+            background.paste(image, mask=image.split()[-1])  # alpha channel
+            image = background
+        else:
+            image = image.convert('RGB')
+
+        pdf_bytes = io.BytesIO()
+        image.save(pdf_bytes, format='PDF')
+        pdf_bytes.seek(0)
+
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="converted.pdf"'
+        return response
+
+    return render(request, 'imagetopdf.html')

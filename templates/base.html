@@ -90,6 +90,9 @@
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'health_converter' %}active-link{% endif %}" href="{% url 'health_converter' %}">Health Converter</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'image_to_pdf_view' %}active-link{% endif %}" href="{% url 'image_to_pdf_view' %}">Image To Pdf Converter</a>
+        </li>
       </ul>
     </div>
   </nav>
