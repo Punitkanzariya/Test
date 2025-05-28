@@ -326,10 +326,6 @@ def color_converter(request):
         'selected_conversion': conversion_type
     })
 
-from django.shortcuts import render
-
-from django.shortcuts import render
-
 def health_converter(request):
     # Group conversions
     weight_conversions = ['kg_to_lb', 'lb_to_kg', 'g_to_oz', 'oz_to_g']
