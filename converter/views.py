@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from PIL import Image
 import io
 import requests
+import os
+from docx2pdf import convert
+import tempfile
 
 def home(request):
     return render(request, 'home.html')
@@ -428,3 +431,33 @@ def image_to_pdf_view(request):
         return response
 
     return render(request, 'imagetopdf.html')
+
+def word_to_pdf_converter(request):
+    if request.method == 'POST' and request.FILES.get('word_file'):
+        word_file = request.FILES['word_file']
+
+        # Save uploaded file temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as temp_docx:
+            for chunk in word_file.chunks():
+                temp_docx.write(chunk)
+            temp_docx_path = temp_docx.name
+
+        # Define temp PDF path
+        temp_pdf_path = temp_docx_path.replace(".docx", ".pdf")
+
+        try:
+            # Convert DOCX to PDF
+            convert(temp_docx_path, temp_pdf_path)
+
+            # Read the PDF and send as response
+            with open(temp_pdf_path, 'rb') as pdf_file:
+                response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename="converted.pdf"'
+                return response
+        finally:
+            # Clean up temp files
+            os.remove(temp_docx_path)
+            if os.path.exists(temp_pdf_path):
+                os.remove(temp_pdf_path)
+
+    return render(request, 'wordtopdf.html')

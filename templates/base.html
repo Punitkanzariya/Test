@@ -99,6 +99,9 @@
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'image_to_pdf_view' %}active-link{% endif %}" href="{% url 'image_to_pdf_view' %}">Image To Pdf Converter</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'word_to_pdf_converter' %}active-link{% endif %}" href="{% url 'word_to_pdf_converter' %}">Word To Pdf Converter</a>
+        </li>
       </ul>
     </div>
   </nav>

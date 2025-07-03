@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm p-4">
+        <h3 class="text-center mb-4 text-primary fw-bold">📄 Word to PDF Converter</h3>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="word_file" class="form-label">Select Word Document</label>
+            <input class="form-control" type="file" id="word_file" name="word_file" accept=".doc,.docx" required />
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Convert to PDF</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

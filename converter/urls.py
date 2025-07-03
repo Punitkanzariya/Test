@@ -9,4 +9,6 @@ urlpatterns = [
     path('color/', views.color_converter, name='color_converter'),
     path('health/', views.health_converter, name='health_converter'),
     path('imagetopdf/', views.image_to_pdf_view, name='image_to_pdf_view'),
+    path('wordtopdf/', views.word_to_pdf_converter, name='word_to_pdf_converter'),
+
 ]
