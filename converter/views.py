@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse,FileResponse
 from PIL import Image
 import io
 import requests
 import os
 from docx2pdf import convert
 import tempfile
+from pdf2docx import Converter
 
 def home(request):
     return render(request, 'home.html')
@@ -461,3 +462,49 @@ def word_to_pdf_converter(request):
                 os.remove(temp_pdf_path)
 
     return render(request, 'wordtopdf.html')
+
+def pdf_to_word_converter(request):
+    if request.method == 'POST' and request.FILES.get('pdf_file'):
+        pdf_file = request.FILES['pdf_file']
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+            for chunk in pdf_file.chunks():
+                temp_pdf.write(chunk)
+            temp_pdf_path = temp_pdf.name
+
+        temp_docx_path = temp_pdf_path.replace(".pdf", ".docx")
+
+        try:
+            # Convert PDF to DOCX
+            cv = Converter(temp_pdf_path)
+            cv.convert(temp_docx_path, start=0, end=None)
+            cv.close()
+
+            # Read DOCX file into memory
+            with open(temp_docx_path, 'rb') as docx_file:
+                docx_content = docx_file.read()
+
+            # Send as downloadable response
+            response = HttpResponse(
+                docx_content,
+                content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            )
+            response['Content-Disposition'] = 'attachment; filename="converted.docx"'
+            return response
+
+        except Exception as e:
+            return render(request, 'pdftoword.html', {
+                'error_message': f"Conversion error: {str(e)}"
+            })
+
+        finally:
+            if os.path.exists(temp_pdf_path):
+                os.remove(temp_pdf_path)
+            if os.path.exists(temp_docx_path):
+                os.remove(temp_docx_path)
+
+    return render(request, 'pdftoword.html')
+
+
+
+

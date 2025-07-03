@@ -102,6 +102,8 @@
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'word_to_pdf_converter' %}active-link{% endif %}" href="{% url 'word_to_pdf_converter' %}">Word To Pdf Converter</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'pdf_to_word_converter' %}active-link{% endif %}" href="{% url 'pdf_to_word_converter' %}">Pdf To Word Converter</a>
       </ul>
     </div>
   </nav>

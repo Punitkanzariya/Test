@@ -10,5 +10,6 @@ urlpatterns = [
     path('health/', views.health_converter, name='health_converter'),
     path('imagetopdf/', views.image_to_pdf_view, name='image_to_pdf_view'),
     path('wordtopdf/', views.word_to_pdf_converter, name='word_to_pdf_converter'),
+    path('pdftoword/', views.pdf_to_word_converter, name='pdf_to_word_converter'),
 
 ]
